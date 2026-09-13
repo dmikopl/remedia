@@ -8,13 +8,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         unzip \
         libicu-dev \
         libzip-dev \
-        libsqlite3-dev \
+        libpq-dev \
         $PHPIZE_DEPS \
     && docker-php-ext-configure intl \
     && docker-php-ext-install -j$(nproc) \
         intl \
         opcache \
-        pdo_sqlite \
+        pdo_pgsql \
         zip \
         pcntl \
     && pecl install xdebug \

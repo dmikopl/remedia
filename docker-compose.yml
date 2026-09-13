@@ -12,13 +12,34 @@ services:
     environment:
       APP_ENV: ${APP_ENV:-dev}
       APP_SECRET: ${APP_SECRET:-change_me_in_production}
-      DATABASE_URL: ${DATABASE_URL:-sqlite:////app/var/data/app.db}
+      DATABASE_URL: ${DATABASE_URL:-postgresql://app:app@database:5432/app?serverVersion=16&charset=utf8}
       XDEBUG_MODE: ${XDEBUG_MODE:-off}
       PHP_IDE_CONFIG: ${PHP_IDE_CONFIG:-serverName=remedia}
       COMPOSER_MEMORY_LIMIT: "-1"
       MAILER_DSN: ${MAILER_DSN:-null://null}
+    depends_on:
+      - database
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    networks:
+      - app
+
+  database:
+    image: postgres:16-alpine
+    container_name: remedia_database
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-app}
+      POSTGRES_USER: ${POSTGRES_USER:-app}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-app}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-app} -d ${POSTGRES_DB:-app}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "${POSTGRES_PORT:-5433}:5432"
+    volumes:
+      - database_data:/var/lib/postgresql/data
     networks:
       - app
 
@@ -34,6 +55,9 @@ services:
       - php
     networks:
       - app
+
+volumes:
+  database_data:
 
 networks:
   app:

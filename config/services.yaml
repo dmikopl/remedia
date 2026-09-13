@@ -28,6 +28,7 @@ services:
     App\:
         resource: '../src/'
         exclude:
+            - '../src/Reservation/Reservation.php'
             - '../src/Scheduling/Holiday.php'
             - '../src/Scheduling/Slot.php'
 

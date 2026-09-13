@@ -1,0 +1,10 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\Reservation\ReservationService:
+        public: true
+
+    App\Reservation\SlotAvailability:
+        public: true

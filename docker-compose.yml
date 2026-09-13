@@ -1,0 +1,40 @@
+services:
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        HOST_UID: ${HOST_UID:-1000}
+        HOST_GID: ${HOST_GID:-1000}
+    container_name: remedia_php
+    volumes:
+      - .:/app
+    environment:
+      APP_ENV: ${APP_ENV:-dev}
+      APP_SECRET: ${APP_SECRET:-change_me_in_production}
+      DATABASE_URL: ${DATABASE_URL:-sqlite:////app/var/data/app.db}
+      XDEBUG_MODE: ${XDEBUG_MODE:-off}
+      PHP_IDE_CONFIG: ${PHP_IDE_CONFIG:-serverName=remedia}
+      COMPOSER_MEMORY_LIMIT: "-1"
+      MAILER_DSN: ${MAILER_DSN:-null://null}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - app
+
+  nginx:
+    image: nginx:alpine
+    container_name: remedia_nginx
+    ports:
+      - "${HTTP_PORT:-8088}:80"
+    volumes:
+      - .:/app:ro
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - php
+    networks:
+      - app
+
+networks:
+  app:
+    driver: bridge

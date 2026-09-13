@@ -7,6 +7,15 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    app.slot_length_minutes: 30
+
+    app.working_hours:
+        monday: { open: '09:00', close: '17:00' }
+        tuesday: { open: '09:00', close: '17:00' }
+        wednesday: { open: '09:00', close: '17:00' }
+        thursday: { open: '09:00', close: '17:00' }
+        friday: { open: '09:00', close: '17:00' }
+        saturday: { open: '10:00', close: '14:20' }
 
 services:
     # default configuration for services in *this* file
@@ -19,5 +28,10 @@ services:
     App\:
         resource: '../src/'
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    App\Scheduling\WorkingHours:
+        arguments:
+            $schedule: '%app.working_hours%'
+
+    App\Scheduling\SlotGenerator:
+        arguments:
+            $slotLengthMinutes: '%app.slot_length_minutes%'

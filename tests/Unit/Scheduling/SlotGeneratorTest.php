@@ -27,7 +27,7 @@ final class SlotGeneratorTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->generator = new SlotGenerator(new WorkingHours(self::SCHEDULE), 30);
+        $this->generator = new SlotGenerator(new WorkingHours(self::SCHEDULE), new InMemoryHolidayCalendar(), 30);
     }
 
     public function testWeekdayIsSplitIntoSixteenSlots(): void
@@ -64,6 +64,18 @@ final class SlotGeneratorTest extends TestCase
     public function testSundayIsClosed(): void
     {
         self::assertSame([], $this->generator->generateFor($this->day('2026-09-20')));
+    }
+
+    public function testHolidayFallingOnAWorkingDayHasNoSlots(): void
+    {
+        $generator = new SlotGenerator(
+            new WorkingHours(self::SCHEDULE),
+            new InMemoryHolidayCalendar(['2026-11-11']),
+            30,
+        );
+
+        self::assertNotSame([], $generator->generateFor($this->day('2026-11-10')));
+        self::assertSame([], $generator->generateFor($this->day('2026-11-11')));
     }
 
     public function testSlotsNeverRunPastClosingTime(): void

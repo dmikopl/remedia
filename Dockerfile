@@ -17,6 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         pdo_pgsql \
         zip \
         pcntl \
+        calendar \
     && pecl install xdebug \
     && docker-php-ext-enable xdebug \
     && apt-get purge -y --auto-remove $PHPIZE_DEPS \

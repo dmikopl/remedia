@@ -5,6 +5,7 @@
     "prefer-stable": true,
     "require": {
         "php": ">=8.3",
+        "ext-calendar": "*",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "doctrine/doctrine-bundle": "^2.19",

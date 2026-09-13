@@ -10,6 +10,7 @@ final class SlotGenerator
 {
     public function __construct(
         private readonly WorkingHours $workingHours,
+        private readonly HolidayCalendar $holidays,
         private readonly int $slotLengthMinutes,
     ) {
     }
@@ -19,7 +20,7 @@ final class SlotGenerator
      */
     public function generateFor(DateTimeImmutable $day): array
     {
-        if (!$this->workingHours->isOpenOn($day)) {
+        if (!$this->workingHours->isOpenOn($day) || $this->holidays->isHoliday($day)) {
             return [];
         }
 
